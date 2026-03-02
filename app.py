@@ -33,7 +33,7 @@ Amount: <input type="number" name="amount"><br><br>
 """
 
 @app.route("/", methods=["GET","POST"])
-def home():
+def home(logo_url = "/logo.png"):
     if request.method == "POST":
         customer = request.form["customer"]
         amount = request.form["amount"]
