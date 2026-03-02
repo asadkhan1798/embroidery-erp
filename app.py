@@ -1,6 +1,7 @@
 from flask import Flask, render_template_string, request
 import sqlite3
-
+from flask import send_from_directory
+import os
 app = Flask(__name__)
 
 # Database
