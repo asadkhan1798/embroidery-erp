@@ -17,7 +17,7 @@ amount REAL
 """)
 conn.commit()
 
-HTML = """
+HTML = """<img src="{{ logo }}" width="150">
 <h1>🔥 Embroidery Live ERP</h1>
 
 <form method="POST">
