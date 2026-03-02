@@ -42,7 +42,7 @@ def home(logo_url = "/logo.png"):
 
     cursor.execute("SELECT * FROM sales")
     sales = cursor.fetchall()
-    return render_template_string(HTML, sales=sales)
+    return render_template_string(HTML, sales=sales, logo=logo_url)(HTML, sales=sales)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
