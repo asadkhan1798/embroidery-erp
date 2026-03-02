@@ -1,7 +1,7 @@
-from flask import Flask, render_template_string, request
+from flask import Flask, render_template_string
 import sqlite3
-from flask import send_from_directory
 import os
+
 app = Flask(__name__)
 
 # Database
@@ -17,32 +17,54 @@ amount REAL
 """)
 conn.commit()
 
-HTML = """<img src="{{ logo }}" width="150">
-<h1>🔥 Embroidery Live ERP</h1>
+# Home Page HTML
+HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>Al.Kher ERP</title>
+</head>
+<body style="text-align:center; font-family:Arial;">
+
+<img src="/logo.png" width="200">
+
+<h1>🔥 Al.Kher Embroidery Textile</h1>
 
 <form method="POST">
-Customer: <input type="text" name="customer"><br><br>
-Amount: <input type="number" name="amount"><br><br>
+Customer:<br>
+<input type="text" name="customer"><br><br>
+Amount:<br>
+<input type="number" name="amount"><br><br>
 <button type="submit">Add Sale</button>
 </form>
 
 <h2>📊 Sales Data</h2>
+
 {% for sale in sales %}
 <p>{{sale[1]}} - {{sale[2]}}</p>
 {% endfor %}
+
+</body>
+</html>
 """
 
 @app.route("/", methods=["GET","POST"])
-def home(logo_url = "/logo.png"):
-    if request.method == "POST":
-        customer = request.form["customer"]
-        amount = request.form["amount"]
-        cursor.execute("INSERT INTO sales(customer,amount) VALUES(?,?)",(customer,amount))
-        conn.commit()
+def home():
+    if flask_request := __import__("flask").request:
+        if flask_request.method == "POST":
+            customer = flask_request.form["customer"]
+            amount = flask_request.form["amount"]
+            cursor.execute("INSERT INTO sales(customer,amount) VALUES(?,?)",(customer,amount))
+            conn.commit()
 
     cursor.execute("SELECT * FROM sales")
     sales = cursor.fetchall()
-    return render_template_string(HTML, sales=sales, logo=logo_url)(HTML, sales=sales)
+
+    return render_template_string(HTML, sales=sales)
+
+@app.route("/logo.png")
+def logo():
+    return app.send_static_file("logo.png")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
